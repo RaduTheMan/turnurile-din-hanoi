@@ -1,0 +1,412 @@
+#include <SFML/Graphics.hpp>
+#include <iostream>
+#include <string>
+#include <ctime>
+#include <cstdlib>
+
+
+int main()
+{
+     sf::Vector2i screenDimensions(1000,800);
+     sf::RenderWindow Window;
+     srand(time(0));
+     int red,green,blue;
+     int xi,yi;
+     Window.create(sf::VideoMode(screenDimensions.x,screenDimensions.y),"Turnurile din Hanoi", sf::Style::Close | sf::Style::Titlebar );
+     sf::Texture pTexture;
+     sf::Sprite Background;
+     sf::Texture pTexture1;
+     sf::Sprite Background1;
+     sf::Texture pTexture2;
+     sf::Sprite Button;
+     sf::Texture pTexture3;
+     sf::Sprite Button1;
+     sf::Texture pTexture4;
+     sf::Sprite titlu;
+     sf::Texture pTexture5;
+     sf::Sprite arrow_left;
+     sf::Texture pTexture6;
+     sf::Sprite arrow_right;
+     if(!pTexture.loadFromFile("Background.png"))
+        std::cout<<"Error "<<'\n';
+     if(!pTexture1.loadFromFile("background1.png"))
+         std::cout<<"Error "<<'\n';
+     if(!pTexture2.loadFromFile("button.png"))
+         std::cout<<"Error "<<'\n';
+     if(!pTexture3.loadFromFile("button1.png"))
+         std::cout<<"Error "<<'\n';
+     if(!pTexture4.loadFromFile("titlu.png"))
+         std::cout<<"Error "<<'\n';
+     if(!pTexture5.loadFromFile("arrow left.png"))
+         std::cout<<"Error "<<'\n';
+     if(!pTexture6.loadFromFile("arrow right.png"))
+         std::cout<<"Error "<<'\n';
+     Background.setTexture(pTexture);
+     Background1.setTexture(pTexture1);
+     Button.setTexture(pTexture2);
+     Button1.setTexture(pTexture3);
+     titlu.setTexture(pTexture4);
+     arrow_left.setTexture(pTexture5); arrow_left.setColor(sf::Color::Green);
+     arrow_right.setTexture(pTexture6); arrow_right.setColor(sf::Color::Green);
+     Button.setPosition(380,350);
+     Button1.setPosition(380,450);
+     arrow_left.setPosition(screenDimensions.x/2-220,screenDimensions.y/2-10);
+     arrow_right.setPosition(screenDimensions.x/2-25,screenDimensions.y/2-10);
+     titlu.setPosition(screenDimensions.x/2-230,0);
+
+     sf::Font font;
+     if(!font.loadFromFile("orbitron-medium.otf"))
+        std::cout<<"Can't find the font file"<<'\n';
+
+     sf::String inapoi="Inapoi";
+     sf::Text text3(inapoi,font,30);
+     text3.setColor(sf::Color::Red);
+     text3.setPosition(10,screenDimensions.y-text3.getLocalBounds().height-10);
+
+
+     sf::String piese="Introdu numarul de piese:";
+     sf::Text text4(piese,font,30);
+     text4.setPosition(screenDimensions.x/2-300,screenDimensions.y/2-50);
+     text4.setColor(sf::Color::Red);
+
+     sf::String mod="Mod:";
+     sf::Text text5(mod,font,30);
+     text5.setPosition(screenDimensions.x/2-300,screenDimensions.y/2-10);
+     text5.setColor(sf::Color::Red);
+
+    sf::RectangleShape s1[10];
+    sf::RectangleShape s2[10];
+    sf::RectangleShape s3[10];
+    s1[0].setSize(sf::Vector2f(200,40));
+    red=rand()%255; blue=rand()%255; green=rand()%255;
+    s1[0].setFillColor(sf::Color(red,green,blue));
+    s1[0].setPosition(100,600);
+    for(int i=1;i<8;i++ )
+    {
+    sf::Vector2f saize;
+    sf::Vector2f position;
+    saize=s1[i-1].getSize();
+    position=s1[i-1].getPosition();
+    s1[i].setSize(sf::Vector2f(saize.x-20,40));
+    red=rand()%255; blue=rand()%255; green=rand()%255;
+    s1[i].setFillColor(sf::Color(red,green,blue));
+    s1[i].setPosition(position.x+10,position.y-40);
+    }
+
+     sf::String choose[3];
+     choose[1]="Automat"; choose[2]="Manual";
+     sf::Text text6[3];
+     text6[1].setFont(font); text6[1].setString(choose[1]); text6[1].setCharacterSize(30); text6[1].setPosition(screenDimensions.x/2-180,screenDimensions.y/2-10); text6[1].setColor(sf::Color(51,102,0));
+     text6[2].setFont(font); text6[2].setString(choose[2]); text6[2].setCharacterSize(30); text6[2].setPosition(screenDimensions.x/2-180,screenDimensions.y/2-10); text6[2].setColor(sf::Color(51,102,0));
+
+
+
+    int nr=0,k=1,cntr,vf1=-1,vf2=-1,vf3=-1,cntr1=0;
+
+
+    bool joc=false,joc1=false,ok=false,ok1=false,ok2=false,ok3=false;
+
+     while(Window.isOpen())
+     {
+         sf::Event Event;
+         while(Window.pollEvent(Event))
+         {
+             switch(Event.type)
+            {
+                case sf::Event::Closed: ///daca apas pe X
+                    Window.close();   ///inchid fereastra
+                    break;
+                case sf::Event::MouseMoved: ///daca misc mouse-ul
+                    if(joc==false) ///daca sunt la meniul principal
+                {
+
+
+                    if(Event.mouseMove.x>=380 && Event.mouseMove.x<=605 && Event.mouseMove.y>=350 && Event.mouseMove.y<=450) ///daca mouse-ul e pe butonul Joaca
+                       Button.setPosition(380,340); ///il misc oleaca mai sus
+                    else
+                        {
+                        Button.setPosition(380,350); ///setez buton Joaca la pozitia initiala
+                        if(Event.mouseMove.x>=380 && Event.mouseMove.x<=605 && Event.mouseMove.y>=450 && Event.mouseMove.y<=540) ///daca mouse-ul e pe butonul Iesire
+                            Button1.setPosition(380,440); ///misc si acest buton in sus
+                        else
+                            Button1.setPosition(380,450); ///il pun si pe acesta la loc
+
+                        }
+
+                }
+                else ///daca sunt in meniul secundar
+                {
+                    if(Event.mouseMove.x>=10 && Event.mouseMove.x<=110 && Event.mouseMove.y>=765 && Event.mouseMove.y<=795) ///daca mouse-ul e pe butonul Inapoi
+                        text3.setColor(sf::Color::Black); ///setez culoarea pe negru
+                    else
+                        {
+                        text3.setColor(sf::Color::Red); ///pun inapoi culoarea pe rosu
+                        if(Event.mouseMove.x>=280 && Event.mouseMove.x<=310 && Event.mouseMove.y>=390 && Event.mouseMove.y<=420) ///daca mouse-ul e pe sagetica din stanga...
+                          arrow_left.setColor(sf::Color::Red); ///setez sageata pe culoarea rosie
+                        else
+                        {
+                            arrow_left.setColor(sf::Color::Green); ///pun inapoi pe verde
+                            if(Event.mouseMove.x>=445 && Event.mouseMove.x<=505 && Event.mouseMove.y>=390 && Event.mouseMove.y<=420) ///sau din dreapta
+                                arrow_right.setColor(sf::Color::Red); ///pun rosu
+                            else
+                                arrow_right.setColor(sf::Color::Green); ///iarasi verde
+
+                        }
+                        }
+                }
+                break;
+                case sf::Event::TextEntered: ///daca se introduce o tasta
+                    if(Event.text.unicode>=51 && Event.text.unicode<=56 && joc==true && piese.getSize()==25) ///si apartine intre [3,8]
+                        {
+                        piese+=(char)Event.text.unicode; ///actualizez numarul de piese
+                        nr=Event.text.unicode-'0';
+                        vf1=nr-1;
+                        }
+                    else
+                        if(Event.text.unicode==8 && piese.getSize()>25 && joc==true) ///daca apas backspace
+                           piese.erase(piese.getSize()-1,piese.getSize()); ///sterg numarul de piese
+                break;
+                case sf::Event::KeyPressed: ///daca se apasa o tasta
+                    if(Event.key.code==sf::Keyboard::Return && piese.getSize()==26) ///si este Enter
+                        joc1=true; ///intru in joc
+                break;
+                case sf::Event::MouseButtonPressed:
+                    if(joc==true)
+                        {
+                        if(Event.mouseButton.button==sf::Mouse::Left) ///daca dau click pe una dintre cele 2 sageti
+                          if( Event.mouseButton.x>=280 && Event.mouseButton.x<=310 && Event.mouseButton.y>=390 && Event.mouseButton.y<=420 || Event.mouseButton.x>=475 && Event.mouseButton.x<=505 && Event.mouseButton.y>=390 && Event.mouseButton.y<=420)
+                            k=3-k; ///schimb modul jocului
+                        }
+
+
+                break;
+
+
+
+
+            }
+        }
+         text4.setString(piese);
+        sf::Vector2i mousePosition=sf::Mouse::getPosition(Window);
+        if(joc==false)
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousePosition.x>=380 && mousePosition.x<=605 && mousePosition.y>=450 && mousePosition.y<=540)
+            Window.close(); ///daca apas click pe Iesire inchid jocul
+        if(joc==false)
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousePosition.x>=380 && mousePosition.x<=605 && mousePosition.y>=350 && mousePosition.y<=450)
+             {
+             joc=true; ///daca apas pe Joaca intru in al doilea meniu
+             Button.setPosition(380,350);
+             }
+        if(joc==true && sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousePosition.x>=10 && mousePosition.x<=110 && mousePosition.y>=765 && mousePosition.y<=795 )
+            {
+            joc=false; ///daca apas pe Inapoi revin la meniul principal
+            text3.setColor(sf::Color::Red);
+            piese.erase(25,piese.getSize());
+            }
+        if(joc1==true  && k==2 && sf::Mouse::isButtonPressed(sf::Mouse::Left)) ///daca suntem in joc si avem modul manual
+                    {
+
+                        sf::Vector2f position1;
+                        sf::Vector2f position2;
+                        sf::Vector2f position3;
+                        sf::Vector2i mousePosition=sf::Mouse::getPosition(Window);
+                        if(vf1>=0) position1=s1[vf1].getPosition();
+                        if(vf2>=0) position2=s2[vf2].getPosition();
+                        if(vf3>=0) position3=s3[vf3].getPosition();
+                        if(vf1>=0 && mousePosition.x>=position1.x && mousePosition.x<=s1[vf1].getLocalBounds().width+position1.x && mousePosition.y>=position1.y && mousePosition.y<=position1.y+s1[vf1].getLocalBounds().height)
+                             ok1=true; ///daca am dat click pe o piesa din varf din prima tija
+                        if(vf2>=0 && mousePosition.x>=position2.x && mousePosition.x<=s2[vf2].getLocalBounds().width+position2.x && mousePosition.y>=position2.y && mousePosition.y<=position2.y+s2[vf2].getLocalBounds().height)
+                            ok2=true;
+                        if(ok1)
+                            s1[vf1].setPosition(mousePosition.x,mousePosition.y);///mut piesa
+                        if(ok2)
+                            s2[vf2].setPosition(mousePosition.x,mousePosition.y);
+                    }
+         if(joc1==true && k==2 && ok1==true)
+         {
+                  if(!(sf::Mouse::isButtonPressed(sf::Mouse::Left))) ///daca am "eliberat" mouse-ul
+                                if(mousePosition.x>=385 && mousePosition.x<=640)  ///daca am pus piesa pe a doua tija
+                                {
+                                    if(vf2==-1 || s1[vf1].getLocalBounds().width<s2[vf2].getLocalBounds().width) ///verific daca o pot pune
+                                    {
+                                    sf::Vector2f saize;  ///in acest caz o pun folosind niste formule folosind 2 subcazuri(daca tija e goala sau are cel putin o piesa)
+                                    s2[++vf2]=s1[vf1];
+                                    vf1--;
+                                    if(vf2==0)
+                                    s2[vf2].setPosition((385+640)/2-s2[vf2].getLocalBounds().width/2,600);
+                                    else
+                                    {
+                                        saize=s2[vf2-1].getPosition();
+                                        s2[vf2].setPosition(((2*saize.x+s2[vf2-1].getLocalBounds().width)/2-s2[vf2].getLocalBounds().width/2),saize.y-40);
+                                    }
+                                    ok1=false;
+                                    }
+                                    else ///daca nu pot s-o pun
+                                        {
+                                        if(vf1==0)
+                                          s1[vf1].setPosition((80+330)/2-s1[vf1].getLocalBounds().width/2,600); ///o pun unde era initial
+                                        else
+                                        {
+                                        sf::Vector2f saize;
+                                        saize=s1[vf1-1].getPosition();
+                                        s1[vf1].setPosition(((2*saize.x+s1[vf1-1].getLocalBounds().width)/2-s1[vf1].getLocalBounds().width/2),saize.y-40);
+                                        }
+                                        ok1=false;
+                                        }
+
+                                }
+                                else
+                                    if(  mousePosition.x<=330) ///daca o pun in prima tija(unde si era initial de altfel)
+                                {
+                                    ok1=false;
+                                    if(vf1==0)
+                                        s1[vf1].setPosition((80+330)/2-s1[vf1].getLocalBounds().width/2,600);  ///fac acelasi lucru
+                                    else
+                                    {
+                                    sf::Vector2f saize;
+                                    saize=s1[vf1-1].getPosition();
+                                    s1[vf1].setPosition(((2*saize.x+s1[vf1-1].getLocalBounds().width)/2-s1[vf1].getLocalBounds().width/2),saize.y-40);
+                                    }
+                                }
+                                else ///daca vreau sa pun in tija a treia
+                                {
+                                    ok1=false;   ///fac acelasi lucru
+                                    if(vf3==-1 || s1[vf1].getLocalBounds().width<s3[vf3].getLocalBounds().width)
+                                    {
+                                    sf::Vector2f saize;
+                                    s3[++vf3]=s1[vf1];
+                                    vf1--;
+                                    if(vf3==0)
+                                        s3[vf3].setPosition(((680+940)/2-s2[vf2].getLocalBounds().width/2),600);
+                                    else
+                                    {
+                                        saize=s3[vf3-1].getPosition();
+                                        s3[vf3].setPosition(((2*saize.x+s3[vf3-1].getLocalBounds().width)/2-s3[vf3].getLocalBounds().width/2),saize.y-40);
+                                    }
+                                    }
+                                    else
+                                    {
+                                        if(vf1==0)
+                                        s1[vf1].setPosition((80+330)/2-s1[vf1].getLocalBounds().width/2,600);
+                                        else
+                                        {
+                                    sf::Vector2f saize;
+                                    saize=s1[vf1-1].getPosition();
+                                    s1[vf1].setPosition(((2*saize.x+s1[vf1-1].getLocalBounds().width)/2-s1[vf1].getLocalBounds().width/2),saize.y-40);
+                                        }
+
+                                    }
+                                }
+         }
+         if(joc1==true && k==2 && ok2==true)
+         {
+                            if(!(sf::Mouse::isButtonPressed(sf::Mouse::Left)))
+                                 if(mousePosition.x>=385 && mousePosition.x<=640)
+                            {
+                               ok2=false;
+                                if(vf2==0)
+                                    s2[vf2].setPosition((385+640)/2-s2[vf2].getLocalBounds().width/2,600);
+                                else
+                                {
+                                    sf::Vector2f saize;
+                                    saize=s2[vf2-1].getPosition();
+                                    s2[vf2].setPosition((2*saize.x+s2[vf2-1].getLocalBounds().width)/2-s2[vf2].getLocalBounds().width/2,saize.y-40);
+                                }
+                            }
+                            else
+                                if(mousePosition.x>=680)
+                            {
+                                ok2=false;
+                                if(vf3==-1 || s2[vf2].getLocalBounds().width<s3[vf3].getLocalBounds().width)
+                                {
+                                 s3[++vf3]=s2[vf2];
+                                 vf2--;
+                                 if(vf3==0)
+                                    s3[vf3].setPosition(((680+940)/2-s3[vf3].getLocalBounds().width/2),600);
+                                 else
+                                 {
+                                     sf::Vector2f saize;
+                                     saize=s3[vf3-1].getPosition();
+                                     s3[vf3].setPosition(((2*saize.x+s3[vf3-1].getLocalBounds().width)/2-s3[vf3].getLocalBounds().width/2),saize.y-40);
+                                 }
+                                }
+                                else
+                                {
+                                    if(vf2==0)
+                                      s2[vf2].setPosition(((385+640)/2-s2[vf2].getLocalBounds().width/2),600);
+                                    else
+                                    {
+                                    sf::Vector2f saize;
+                                    saize=s2[vf2-1].getPosition();
+                                    s2[vf2].setPosition(((2*saize.x+s2[vf2-1].getLocalBounds().width)/2-s2[vf2].getLocalBounds().width/2),saize.y-40);
+                                    }
+
+                                }
+                            }
+                            else
+                                if(mousePosition.x<=330)
+                            {
+                                ok2=false;
+                                if(vf1==-1 || s2[vf2].getLocalBounds().width<s1[vf1].getLocalBounds().width)
+                                {
+                                    s1[++vf1]=s2[vf2];
+                                    vf2--;
+                                    if(vf1==0)
+                                        s1[vf1].setPosition((80+330)/2-s1[vf1].getLocalBounds().width/2,600);
+                                    else
+                                    {
+                                        sf::Vector2f saize;
+                                        saize=s1[vf1-1].getPosition();
+
+                                    }
+                                }
+                            }
+         }
+        if(joc==false)
+          {
+        Window.clear();
+        Window.draw(Background);
+        Window.draw(titlu);
+        Window.draw(Button);
+        Window.draw(Button1);
+
+
+        }
+        else
+           if(joc==true && joc1==false)
+          {
+        Window.clear();
+        Window.draw(Background);
+        Window.draw(titlu);
+        Window.draw(text3);
+        Window.draw(text4);
+        Window.draw(text5);
+        Window.draw(text6[k]);
+        Window.draw(arrow_left);
+        Window.draw(arrow_right);
+          }
+        else if(joc1==true)
+        {
+            Window.clear();
+            Window.draw(Background1);
+            for(int i=0;i<=vf1;i++)
+                Window.draw(s1[i]);
+            for(int i=0;i<=vf2;i++)
+                Window.draw(s2[i]);
+            for(int i=0;i<=vf3;i++)
+                Window.draw(s3[i]);
+
+
+        }
+
+
+        Window.display();
+    }
+
+
+
+    return 0;
+}
+
+
+
