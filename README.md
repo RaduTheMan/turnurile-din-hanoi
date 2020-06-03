@@ -1,2 +1,2 @@
 # Turnurile din Hanoi(Towers of Hanoi)
-The executable file is sfml-test.exe
+Fisierul executabil se gaseste in ~/Executable/sfml-test.exe
